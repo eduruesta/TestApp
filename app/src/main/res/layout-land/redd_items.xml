@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@color/black"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:id="@+id/titleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:includeFontPadding="true"
+        android:letterSpacing="-0.02"
+        android:lineSpacingExtra="5sp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:id="@+id/circleView"
+            android:background="@drawable/circle_view"
+            android:layout_marginEnd="6dp"/>
+
+        <TextView
+            android:id="@+id/postTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Morty Goldman"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginEnd="6dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/postCreated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="18 hours ago"
+            android:textColor="@color/white"
+            android:layout_marginEnd="6dp"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/imageContainer"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleContainer">
+
+        <ImageView
+            android:id="@+id/postImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/postDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/white"
+            tools:text="I wonder if the roads any better"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/dismissContainer"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageContainer">
+
+
+        <TextView
+            android:id="@+id/dismissText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dismiss Post"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:drawableStart="@drawable/ic_cancel_orange_24dp"
+            android:drawablePadding="2dp"
+            android:layout_marginEnd="18dp" />
+
+        <TextView
+            android:id="@+id/commentsNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="2345 comments"
+            android:textColor="@color/orange"
+            android:layout_marginEnd="6dp"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dismissContainer"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

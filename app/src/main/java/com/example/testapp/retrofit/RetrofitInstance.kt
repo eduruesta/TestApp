@@ -7,7 +7,7 @@ class RetrofitInstance {
 
     companion object {
 
-        private const val BASE_URL = "https://www.reddit.com/r/subreddit"
+        private const val BASE_URL = "https://www.reddit.com"
 
         private var retrofit: Retrofit? = null
 

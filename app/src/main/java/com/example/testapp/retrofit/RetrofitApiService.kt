@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface RetrofitApiService {
 
     @GET("/top.json?count=50")
-    fun getTopReddit(): Call<List<TopReddit>>
+    fun getTopReddit(): Call<TopReddit>
 }
