@@ -10,7 +10,7 @@ class RedditViewModel(application: Application) : AndroidViewModel(application) 
 
     private val redditRepository = RedditRepository(application)
 
-    fun getTopReddit() : LiveData<List<TopReddit>> =
+    fun getTopReddit() : LiveData<TopReddit> =
         redditRepository.mutableLiveData()
 
 }

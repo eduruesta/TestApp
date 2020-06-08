@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TestApp</string>
+    <string name="dismiss_all">Dismiss All</string>
+    <string name="reddit_posts">Reddit Posts</string>
 </resources>
