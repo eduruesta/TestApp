@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.testapp.R
 import com.example.testapp.domain.RedditChildren
+import com.example.testapp.domain.RedditChildrenInformation
 import kotlinx.android.synthetic.main.redd_items.view.*
 import java.text.ParseException
 import java.util.*
 
 
-class RedditAdapter(private val context: Context, private val redditList: List<RedditChildren>) :
+class RedditAdapter(private val context: Context, private val redditList: List<RedditChildren>, private val clickListener: (redditChildren: RedditChildrenInformation) -> Unit) :
     RecyclerView.Adapter<BaseViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder =
         RedditViewHolder(
@@ -31,7 +33,7 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
 
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        holder.onBind(position, redditList[position], context)
+        holder.onBind(position, redditList[position], context, clickListener)
     }
 
 
@@ -51,7 +53,12 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
             TODO("Not yet implemented")
         }
 
-        override fun onBind(position: Int, topReddit: RedditChildren, context: Context) {
+        override fun onBind(
+            position: Int,
+            topReddit: RedditChildren,
+            context: Context,
+            clickListener: (redditChildren: RedditChildrenInformation) -> Unit
+        ) {
            topReddit.data.let {
                postTitle.text = it.author
                postDescription.text = it.title
@@ -64,8 +71,8 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
 
             itemView.setOnClickListener {
                 circleView.visibility = View.INVISIBLE
+                clickListener(topReddit.data)
             }
-
         }
 
         private fun entryDate(created: Int): CharSequence? {

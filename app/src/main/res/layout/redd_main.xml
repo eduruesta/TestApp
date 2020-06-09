@@ -40,7 +40,14 @@
         android:id="@+id/rightContainer"
         android:layout_height="fill_parent"
         android:layout_width="0dp"
-        android:orientation="horizontal"/>
+        android:orientation="vertical">
+
+
+        <include android:id="@+id/infoItems"
+            layout="@layout/redd_items_info"/>
+
+
+    </LinearLayout>
 
 
 
