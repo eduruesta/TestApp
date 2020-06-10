@@ -1,8 +1,18 @@
 package com.example.testapp.ui
 
+import android.Manifest
+import android.Manifest.*
+import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -15,11 +25,8 @@ import com.example.testapp.domain.RedditChildrenInformation
 import com.example.testapp.domain.TopReddit
 import com.example.testapp.viewmodels.RedditViewModel
 import kotlinx.android.synthetic.main.redd_items_info.*
-import kotlinx.android.synthetic.main.redd_items_info.view.*
-import kotlinx.android.synthetic.main.redd_items_info.view.imageInfo
-import kotlinx.android.synthetic.main.redd_items_info.view.subtitleInfo
-import kotlinx.android.synthetic.main.redd_items_info.view.titleInfo
 import kotlinx.android.synthetic.main.redd_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,16 +38,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.redd_main)
         redditViewModel = ViewModelProvider(this).get(RedditViewModel::class.java)
         getTopReddit()
+        swiperefresh.setOnRefreshListener {
+            getTopReddit()
+        }
     }
 
-    fun getTopReddit() {
+    private fun getTopReddit() {
+        swiperefresh.isRefreshing = true
         redditViewModel.getTopReddit().observe(this, Observer {
+            swiperefresh.isRefreshing = false
             prepareRecyclerView(it)
         })
     }
 
     private fun prepareRecyclerView(topRedditList: TopReddit) {
-        redditAdapter = RedditAdapter(applicationContext, topRedditList.data.children) { item -> doClick(item)}
+        val redditChildren =  ArrayList<RedditChildren>()
+        for (redditChidr in topRedditList.data.children) {
+            redditChildren.add(redditChidr)
+        }
+        redditAdapter = RedditAdapter(applicationContext, redditChildren) { item -> clickOnImage(item)}
 
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             redditRecyclerView.layoutManager = (LinearLayoutManager(this))
@@ -50,14 +66,60 @@ class MainActivity : AppCompatActivity() {
         redditRecyclerView.itemAnimator = DefaultItemAnimator()
         redditRecyclerView.adapter = redditAdapter
         redditAdapter.notifyDataSetChanged()
+
+        dismissButton.setOnClickListener {
+            redditChildren.clear()
+            redditAdapter.notifyDataSetChanged()
+        }
+
     }
 
-    private fun doClick(item: RedditChildrenInformation) {
+    private fun clickOnImage(item: RedditChildrenInformation) {
         titleInfo.text = item.author
         Glide.with(applicationContext)
             .load(item.thumbnail)
             .into(imageInfo)
         subtitleInfo.text = item.title
+        imageInfo.setOnClickListener {
+            if (isWriteStoragePermissionGranted()) {
+                saveImageToGallery(imageInfo, item.title)
+            }
+        }
+    }
+
+    private fun saveImageToGallery(imageInfo: ImageView?, title: String?) {
+        val drawable = imageInfo?.drawable
+        val bitmap = (drawable as BitmapDrawable).bitmap
+        // Save image to gallery
+        val saveImageUrl =  MediaStore.Images.Media.insertImage(
+            contentResolver,
+            bitmap,
+            title,
+            "Image of $title"
+        )
+        toast("saved : $saveImageUrl")
+    }
+
+
+    private fun Context.toast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isWriteStoragePermissionGranted()
+            = if (Build.VERSION.SDK_INT >= 26) {
+        if (checkSelfPermission(permission.WRITE_EXTERNAL_STORAGE)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(permission.WRITE_EXTERNAL_STORAGE),
+                2)
+            false
+        }
+    } else { //permission is automatically granted on sdk<23 upon installation
+        true
     }
 
 }

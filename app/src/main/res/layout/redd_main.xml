@@ -7,6 +7,12 @@
     android:orientation="horizontal"
     tools:context=".ui.MainActivity">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_weight="1"
         android:id="@+id/leftContainer"
@@ -18,8 +24,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/redditRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
@@ -34,6 +39,8 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <LinearLayout
         android:layout_weight="1"
@@ -48,7 +55,6 @@
 
 
     </LinearLayout>
-
 
 
 </LinearLayout>

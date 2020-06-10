@@ -1,6 +1,8 @@
 package com.example.testapp.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +41,7 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
 
 
 
+
     class RedditViewHolder(itemView: View) :BaseViewHolder(itemView) {
 
         private val circleView: ImageView = itemView.circleView
@@ -50,7 +53,7 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
         private val commentsNumber: TextView = itemView.commentsNumber
 
         override fun clear() {
-            TODO("Not yet implemented")
+
         }
 
         override fun onBind(
@@ -69,11 +72,29 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
                 postCreated.text = entryDate(it.created)
            }
 
-            itemView.setOnClickListener {
-                circleView.visibility = View.INVISIBLE
-                clickListener(topReddit.data)
+            onItemClick(clickListener, topReddit.data)
+            onImageClick(topReddit.data.thumbnail, context)
+
+
+        }
+
+        private fun onImageClick(thumbnail: String?, context: Context) {
+            postImage.setOnClickListener {
+              val imageIntent = Intent()
+                imageIntent.action = Intent.ACTION_VIEW
+                imageIntent.addCategory(Intent.CATEGORY_BROWSABLE)
+                imageIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                imageIntent.data = Uri.parse(thumbnail)
+                context.startActivity(imageIntent)
             }
         }
+
+        private fun onItemClick(clickListener: (redditChildren: RedditChildrenInformation) -> Unit,
+                                data: RedditChildrenInformation) {
+            itemView.setOnClickListener {
+                circleView.visibility = View.INVISIBLE
+                clickListener(data)
+            }        }
 
         private fun entryDate(created: Int): CharSequence? {
             val date = Date(created * 1000L).toInstant()
