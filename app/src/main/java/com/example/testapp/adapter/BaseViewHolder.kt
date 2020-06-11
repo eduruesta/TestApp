@@ -14,6 +14,7 @@ abstract class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
         position: Int,
         topReddit: RedditChildren,
         context: Context,
-        clickListener: (redditChildren: RedditChildrenInformation) -> Unit
+        clickItemListener: (redditChildren: RedditChildrenInformation) -> Unit,
+        clickOnDismiss: (position: Int) -> Unit
     )
 }

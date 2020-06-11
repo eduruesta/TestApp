@@ -17,29 +17,38 @@ import com.example.testapp.domain.RedditChildrenInformation
 import kotlinx.android.synthetic.main.redd_items.view.*
 import java.text.ParseException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class RedditAdapter(private val context: Context, private val redditList: List<RedditChildren>, private val clickListener: (redditChildren: RedditChildrenInformation) -> Unit) :
+class RedditAdapter(private val context: Context, redditList: List<RedditChildren>, private val clickListener: (redditChildren: RedditChildrenInformation) -> Unit,
+                    private val clickOnDismiss: (redditChildren: Int) -> Unit) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
+
+    private val redditArrayList: ArrayList<RedditChildren> = redditList as ArrayList<RedditChildren>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder =
         RedditViewHolder(
         LayoutInflater.from(parent.context).inflate(
             R.layout.redd_items,
             parent,
-            false
-        ))
+            false))
 
-    override fun getItemCount(): Int = redditList.size
+    override fun getItemCount(): Int = redditArrayList.size
 
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        holder.onBind(position, redditList[position], context, clickListener)
+        holder.onBind(position, redditArrayList[position], context, clickListener, clickOnDismiss)
     }
 
 
+    fun deleteItem(position: Int) {
+        val redditArrayList = redditArrayList
+        val recentlyDeletedItem = redditArrayList[position]
+        redditArrayList.remove(recentlyDeletedItem)
 
+        notifyItemRemoved(position)
+    }
 
 
     class RedditViewHolder(itemView: View) :BaseViewHolder(itemView) {
@@ -60,7 +69,8 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
             position: Int,
             topReddit: RedditChildren,
             context: Context,
-            clickListener: (redditChildren: RedditChildrenInformation) -> Unit
+            clickItemListener: (redditChildren: RedditChildrenInformation) -> Unit,
+            clickOnDismiss: (position: Int) -> Unit
         ) {
            topReddit.data.let {
                postTitle.text = it.author
@@ -69,12 +79,20 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
                Glide.with(itemView.context)
                    .load(it.thumbnail)
                    .into(postImage)
-                postCreated.text = entryDate(it.created)
+               postCreated.text = entryDate(it.created)
            }
 
-            onItemClick(clickListener, topReddit.data)
+            onItemClick(clickItemListener, topReddit.data)
             onImageClick(topReddit.data.thumbnail, context)
+            onDismissClick(clickOnDismiss, position)
 
+        }
+
+        private fun onDismissClick(clickOnDismiss: (position: Int) -> Unit,
+                                   position: Int) {
+            dismissText.setOnClickListener {
+                clickOnDismiss(position)
+            }
 
         }
 
@@ -94,7 +112,10 @@ class RedditAdapter(private val context: Context, private val redditList: List<R
             itemView.setOnClickListener {
                 circleView.visibility = View.INVISIBLE
                 clickListener(data)
-            }        }
+            }
+        }
+
+
 
         private fun entryDate(created: Int): CharSequence? {
             val date = Date(created * 1000L).toInstant()

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
     android:orientation="horizontal"
     tools:context=".ui.MainActivity">
 
@@ -40,6 +41,12 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <View
+        android:layout_width="3dp"
+        android:id="@+id/separator"
+        android:layout_height="match_parent"
+        android:background="@color/gray"/>
 
 
     <LinearLayout

@@ -1,14 +1,18 @@
 package com.example.testapp.ui
 
-import android.Manifest
-import android.Manifest.*
+import android.Manifest.permission
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var redditAdapter: RedditAdapter
     private lateinit var redditViewModel: RedditViewModel
+    private var mStopHandler = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         swiperefresh.setOnRefreshListener {
             getTopReddit()
         }
+        separator.setOnTouchListener(LeftLayoutTouchListener(swiperefresh))
     }
 
     private fun getTopReddit() {
@@ -51,13 +57,21 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
     private fun prepareRecyclerView(topRedditList: TopReddit) {
-        val redditChildren =  ArrayList<RedditChildren>()
+        val redditChildren = ArrayList<RedditChildren>()
         for (redditChidr in topRedditList.data.children) {
             redditChildren.add(redditChidr)
         }
-        redditAdapter = RedditAdapter(applicationContext, redditChildren) { item -> clickOnImage(item)}
+        redditAdapter = RedditAdapter(applicationContext, redditChildren, { item -> clickOnImage(item) },
+            { position -> clickOnDismiss(position)})
 
+        configureRecyclerView()
+        onDismissAll(redditChildren)
+    }
+
+    //Configure Recycler
+    private fun configureRecyclerView() {
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             redditRecyclerView.layoutManager = (LinearLayoutManager(this))
         } else {
@@ -66,12 +80,14 @@ class MainActivity : AppCompatActivity() {
         redditRecyclerView.itemAnimator = DefaultItemAnimator()
         redditRecyclerView.adapter = redditAdapter
         redditAdapter.notifyDataSetChanged()
+    }
 
+
+    private fun onDismissAll(redditChildren: ArrayList<RedditChildren>) {
         dismissButton.setOnClickListener {
             redditChildren.clear()
             redditAdapter.notifyDataSetChanged()
         }
-
     }
 
     private fun clickOnImage(item: RedditChildrenInformation) {
@@ -87,11 +103,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+     private fun clickOnDismiss(position: Int) {
+         redditAdapter.deleteItem(position)
+         redditAdapter.notifyItemChanged(position)
+     }
+
     private fun saveImageToGallery(imageInfo: ImageView?, title: String?) {
         val drawable = imageInfo?.drawable
         val bitmap = (drawable as BitmapDrawable).bitmap
         // Save image to gallery
-        val saveImageUrl =  MediaStore.Images.Media.insertImage(
+        val saveImageUrl = MediaStore.Images.Media.insertImage(
             contentResolver,
             bitmap,
             title,
@@ -105,8 +126,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun isWriteStoragePermissionGranted()
-            = if (Build.VERSION.SDK_INT >= 26) {
+    private fun isWriteStoragePermissionGranted() = if (Build.VERSION.SDK_INT >= 26) {
         if (checkSelfPermission(permission.WRITE_EXTERNAL_STORAGE)
             == PackageManager.PERMISSION_GRANTED
         ) {
@@ -115,13 +135,15 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(permission.WRITE_EXTERNAL_STORAGE),
-                2)
+                2
+            )
             false
         }
-    } else { //permission is automatically granted on sdk<23 upon installation
+    } else {
         true
     }
-
 }
+
+
 
 
