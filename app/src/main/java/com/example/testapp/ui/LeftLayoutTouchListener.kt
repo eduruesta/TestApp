@@ -18,15 +18,18 @@ class LeftLayoutTouchListener(swipeRefreshLayout: SwipeRefreshLayout) : View.OnT
     private var upX = 0f
     private var upY = 0f
 
-    fun onRightToLeftSwipe() {
-       swipeRefresh.visibility = View.GONE
-        swipeRefresh.animate().duration = 1000
-
+    private fun onRightToLeftSwipe() {
+        swipeRefresh.also {
+            it.visibility = View.GONE
+            it.animate().duration = 1000
+        }
     }
 
-    fun onLeftToRightSwipe() {
-        swipeRefresh.visibility = View.VISIBLE
-        swipeRefresh.animate().duration = 1000
+    private fun onLeftToRightSwipe() {
+        swipeRefresh.also {
+            it.visibility = View.VISIBLE
+            it.animate().duration = 1000
+        }
     }
 
 
@@ -43,7 +46,6 @@ class LeftLayoutTouchListener(swipeRefreshLayout: SwipeRefreshLayout) : View.OnT
                 val deltaX = downX - upX
                 val deltaY = downY - upY
 
-                // swipe horizontal?
                 if (kotlin.math.abs(deltaX) > MIN_DISTANCE) {
                     // left or right
                     if (deltaX < 0) {
@@ -59,7 +61,6 @@ class LeftLayoutTouchListener(swipeRefreshLayout: SwipeRefreshLayout) : View.OnT
                         logTag,
                         "Swipe was only " + kotlin.math.abs(deltaX) + " long horizontally, need at least " + MIN_DISTANCE
                     )
-                    // return false; // We don't consume the event
                 }
 
 

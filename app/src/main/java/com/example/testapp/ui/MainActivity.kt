@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var redditAdapter: RedditAdapter
     private lateinit var redditViewModel: RedditViewModel
-    private var mStopHandler = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

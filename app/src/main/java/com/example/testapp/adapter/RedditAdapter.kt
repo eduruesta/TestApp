@@ -98,11 +98,12 @@ class RedditAdapter(private val context: Context, redditList: List<RedditChildre
 
         private fun onImageClick(thumbnail: String?, context: Context) {
             postImage.setOnClickListener {
-              val imageIntent = Intent()
-                imageIntent.action = Intent.ACTION_VIEW
-                imageIntent.addCategory(Intent.CATEGORY_BROWSABLE)
-                imageIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                imageIntent.data = Uri.parse(thumbnail)
+              val imageIntent = Intent().apply {
+                  action = Intent.ACTION_VIEW
+                  addCategory(Intent.CATEGORY_BROWSABLE)
+                  flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                  data = Uri.parse(thumbnail)
+              }
                 context.startActivity(imageIntent)
             }
         }
